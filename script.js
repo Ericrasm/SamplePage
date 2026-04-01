@@ -96,31 +96,32 @@
   });
 
   /* ── Animated counters ── */
+  var ANIMATION_DURATION_MS = 1800;
+  var ANIMATION_FRAME_INTERVAL_MS = 16;
+
   function animateCounter(el) {
-    const target = parseInt(el.getAttribute('data-target'), 10);
+    var target = parseInt(el.getAttribute('data-target'), 10);
     if (isNaN(target)) return;
 
-    const duration = 1800;
-    const step = 16;
-    const increment = target / (duration / step);
-    let current = 0;
+    var increment = target / (ANIMATION_DURATION_MS / ANIMATION_FRAME_INTERVAL_MS);
+    var current = 0;
+    var statItem = el.closest('.stat-item');
+    var suffix = statItem ? getSuffix(statItem) : '';
 
-    const suffix = el.closest('.stat-item') ? getSuffix(el) : '';
-
-    const timer = setInterval(function () {
+    var timer = setInterval(function () {
       current += increment;
       if (current >= target) {
         current = target;
         clearInterval(timer);
       }
       el.textContent = Math.floor(current).toLocaleString() + suffix;
-    }, step);
+    }, ANIMATION_FRAME_INTERVAL_MS);
   }
 
   function getSuffix(statItem) {
-    const label = statItem.querySelector('.label');
+    var label = statItem.querySelector('.label');
     if (!label) return '';
-    const text = label.textContent;
+    var text = label.textContent;
     if (text.includes('%')) return '%';
     if (text.includes('+')) return '+';
     return '';
@@ -160,8 +161,7 @@
       /* Email */
       const emailEl = document.getElementById('email');
       const fgEmail = document.getElementById('fg-email');
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(emailEl.value.trim())) {
+      if (!emailEl.value.trim() || !emailEl.validity.valid) {
         fgEmail.classList.add('error');
         valid = false;
       } else {
